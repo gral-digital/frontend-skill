@@ -4,34 +4,83 @@ A system of 18 specialized slash commands that give Claude Code deep expertise i
 
 These are not generic prompts. They encode opinionated, production-grade design knowledge: anti-pattern detection, AI slop avoidance, WCAG compliance, and the kind of attention to detail that separates shipped from polished.
 
+## Requirements
+
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (Anthropic's CLI agent) installed and working
+- Git installed on your machine
+
 ## Installation
 
-### 1. Copy commands
+### Step 1 — Clone the repository
+
+Open your terminal and run:
 
 ```bash
-cp -r commands/ ~/.claude/commands/
+git clone https://github.com/gral-digital/frontend-skill.git
 ```
 
-Commands become available as `/user:command-name` in any Claude Code session.
+This downloads the entire skill set to a folder called `frontend-skill/` in your current directory.
 
-### 2. Copy reference files
+### Step 2 — Copy commands to Claude Code
+
+Claude Code looks for custom slash commands in `~/.claude/commands/`. Copy them there:
+
+```bash
+cp frontend-skill/commands/*.md ~/.claude/commands/
+```
+
+After this step, all 18 commands are available in **every** Claude Code session as `/user:command-name` (e.g. `/user:magistero`, `/user:scrutinio`, etc.).
+
+### Step 3 — Copy reference files
+
+Reference files contain deep technical material (typography scales, motion timing, interaction patterns) that commands consult automatically. They go in `~/.claude/reference/`:
 
 ```bash
 mkdir -p ~/.claude/reference
-cp -r reference/ ~/.claude/reference/
+cp frontend-skill/reference/*.md ~/.claude/reference/
 ```
 
-Reference files contain deep technical material (typography scales, motion timing, interaction patterns) that commands consult when needed.
+### Step 4 — Verify installation
 
-### 3. First-time setup
+Open Claude Code in any project and type `/user:` — you should see all 18 commands in the autocomplete list. If you do, you're ready.
 
-In any project, run:
+### Step 5 — First-time project setup
+
+In any project where you want to use these skills, run:
 
 ```
 /user:magistero teach
 ```
 
-This interviews you about your project's audience, brand, and aesthetic direction, then writes a `.design-context.md` file that all other commands use as context. Without it, commands will ask you to run it first.
+Claude will interview you about your project's audience, brand personality, and aesthetic direction, then save the answers to a `.design-context.md` file in the project root. All other commands read this file to produce context-aware results instead of generic output.
+
+You only need to do this **once per project**.
+
+> **Note**: If you skip this step, any command you run will ask you to do it first — nothing will break, you'll just be redirected.
+
+### Updating
+
+To get the latest version of the skills:
+
+```bash
+cd frontend-skill
+git pull
+cp commands/*.md ~/.claude/commands/
+cp reference/*.md ~/.claude/reference/
+```
+
+### Uninstalling
+
+To remove all skills:
+
+```bash
+# Remove commands
+cd ~/.claude/commands
+rm magistero.md forgia.md scrutinio.md carattere.md componi.md tinta.md anima.md muta.md lume.md incanto.md inizia.md ardore.md smorza.md distilla.md affina.md tempra.md allinea.md lucida.md
+
+# Remove references
+rm -rf ~/.claude/reference
+```
 
 ---
 
@@ -153,17 +202,20 @@ When you run any command, it first checks for `.design-context.md` in your proje
 
 ---
 
-## Project-Level Installation
+## Alternative: Project-Level Installation
 
-If you prefer per-project instead of global:
+If you want the skills available only in a specific project (instead of globally), copy them into the project's `.claude/` directory:
 
 ```bash
-# From your project root
+cd /path/to/your/project
+
 mkdir -p .claude/commands
-cp -r /path/to/commands/ .claude/commands/
+cp /path/to/frontend-skill/commands/*.md .claude/commands/
 
 mkdir -p .claude/reference
-cp -r /path/to/reference/ .claude/reference/
+cp /path/to/frontend-skill/reference/*.md .claude/reference/
 ```
 
-Commands become available as `/project:command-name`. Update the reference paths in commands from `~/.claude/reference/` to `.claude/reference/` if needed.
+Commands become available as `/project:command-name` (e.g. `/project:magistero`) only when Claude Code is running inside that project.
+
+> **Note**: If you use project-level installation, you'll need to find-and-replace `~/.claude/reference/` with `.claude/reference/` in the command files so they point to the correct location.
