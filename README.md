@@ -4,82 +4,48 @@ A system of 18 specialized slash commands that give Claude Code deep expertise i
 
 These are not generic prompts. They encode opinionated, production-grade design knowledge: anti-pattern detection, AI slop avoidance, WCAG compliance, and the kind of attention to detail that separates shipped from polished.
 
-## Requirements
-
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (Anthropic's CLI agent) installed and working
-- Git installed on your machine
-
 ## Installation
 
-### Step 1 — Clone the repository
-
-Open your terminal and run:
+Make sure you have [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and Node.js installed, then run:
 
 ```bash
-git clone https://github.com/gral-digital/frontend-skill.git
+npx gral-frontend-skill
 ```
 
-This downloads the entire skill set to a folder called `frontend-skill/` in your current directory.
+That's it. The installer copies 18 commands and 8 reference files to `~/.claude/` so they're available in every Claude Code session.
 
-### Step 2 — Copy commands to Claude Code
+### First-time project setup
 
-Claude Code looks for custom slash commands in `~/.claude/commands/`. Copy them there:
-
-```bash
-cp frontend-skill/commands/*.md ~/.claude/commands/
-```
-
-After this step, all 18 commands are available in **every** Claude Code session as `/user:command-name` (e.g. `/user:magistero`, `/user:scrutinio`, etc.).
-
-### Step 3 — Copy reference files
-
-Reference files contain deep technical material (typography scales, motion timing, interaction patterns) that commands consult automatically. They go in `~/.claude/reference/`:
-
-```bash
-mkdir -p ~/.claude/reference
-cp frontend-skill/reference/*.md ~/.claude/reference/
-```
-
-### Step 4 — Verify installation
-
-Open Claude Code in any project and type `/user:` — you should see all 18 commands in the autocomplete list. If you do, you're ready.
-
-### Step 5 — First-time project setup
-
-In any project where you want to use these skills, run:
+In any project where you want to use these skills, open Claude Code and run:
 
 ```
 /user:magistero teach
 ```
 
-Claude will interview you about your project's audience, brand personality, and aesthetic direction, then save the answers to a `.design-context.md` file in the project root. All other commands read this file to produce context-aware results instead of generic output.
+Claude will interview you about your project's audience, brand personality, and aesthetic direction, then save a `.design-context.md` file in the project root. All other commands use this file to produce context-aware results instead of generic output.
 
-You only need to do this **once per project**.
+You only need to do this **once per project**. If you skip it, commands will ask you to do it first.
 
-> **Note**: If you skip this step, any command you run will ask you to do it first — nothing will break, you'll just be redirected.
+### Project-level installation
+
+If you want the skills available only inside a specific project (instead of globally), run the installer from the project root with the `--project` flag:
+
+```bash
+npx gral-frontend-skill --project
+```
+
+This copies everything to `.claude/commands/` and `.claude/reference/` within the current directory, and automatically rewrites internal paths. Commands become available as `/project:command-name`.
 
 ### Updating
 
-To get the latest version of the skills:
-
 ```bash
-cd frontend-skill
-git pull
-cp commands/*.md ~/.claude/commands/
-cp reference/*.md ~/.claude/reference/
+npx gral-frontend-skill@latest
 ```
 
 ### Uninstalling
 
-To remove all skills:
-
 ```bash
-# Remove commands
-cd ~/.claude/commands
-rm magistero.md forgia.md scrutinio.md carattere.md componi.md tinta.md anima.md muta.md lume.md incanto.md inizia.md ardore.md smorza.md distilla.md affina.md tempra.md allinea.md lucida.md
-
-# Remove references
-rm -rf ~/.claude/reference
+npx gral-frontend-skill --uninstall
 ```
 
 ---
@@ -202,20 +168,17 @@ When you run any command, it first checks for `.design-context.md` in your proje
 
 ---
 
-## Alternative: Project-Level Installation
+## Manual Installation
 
-If you want the skills available only in a specific project (instead of globally), copy them into the project's `.claude/` directory:
+If you prefer not to use npx, you can clone and copy manually:
 
 ```bash
-cd /path/to/your/project
-
-mkdir -p .claude/commands
-cp /path/to/frontend-skill/commands/*.md .claude/commands/
-
-mkdir -p .claude/reference
-cp /path/to/frontend-skill/reference/*.md .claude/reference/
+git clone https://github.com/gral-digital/frontend-skill.git
+cp frontend-skill/commands/*.md ~/.claude/commands/
+mkdir -p ~/.claude/reference
+cp frontend-skill/reference/*.md ~/.claude/reference/
 ```
 
-Commands become available as `/project:command-name` (e.g. `/project:magistero`) only when Claude Code is running inside that project.
+## License
 
-> **Note**: If you use project-level installation, you'll need to find-and-replace `~/.claude/reference/` with `.claude/reference/` in the command files so they point to the correct location.
+MIT
